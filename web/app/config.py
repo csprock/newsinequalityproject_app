@@ -15,6 +15,15 @@ class Config(object):
 
     MAX_PER_PAGE = 3
 
+    MAIL_SERVER = os.environ['MAIL_SERVER']
+    MAIL_PORT = os.environ['MAIL_PORT']
+    MAIL_USE_TLS = os.environ['MAIL_USE_TLS']
+    MAIL_USERNAME = os.environ['MAIL_USERNAME']
+    MAIL_PASSWORD = os.environ['MAIL_PASSWORD']
+
+    ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
+
+
     #AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     #AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
     #FLASKS3_BUCKET_NAME = os.environ['FLASKS3_BUCKET_NAME']

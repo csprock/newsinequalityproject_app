@@ -6,7 +6,7 @@ services:
    - ./web/web.env
    - ./db/db.env
   environment:
-   - INIT_DB=1
+   - INIT_DB=0
   expose:
    - "8000"
   ports:

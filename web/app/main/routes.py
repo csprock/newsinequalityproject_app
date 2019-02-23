@@ -1,9 +1,16 @@
 from flask import render_template, flash, redirect, url_for, request
+from flask_mail import Message
 from app.main.forms import ContactForm
 from app.main import bp
 from app import app
-
+from app import mail
 from app.models import Post, Author
+
+from threading import Thread
+
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
 
 
 @bp.route('/')
@@ -33,8 +40,27 @@ def contact():
     form = ContactForm()
 
     if form.validate_on_submit():
-        # TODO: logic to send email
-        flash("Thank you for your interest!")
+
+        email_addr = form.email.data
+        comment = form.comment.data
+        name = form.name.data
+
+        body_message = '''
+        From: {} at {}, \n
+        Comment: {}
+        '''.format(name, email_addr, comment)
+
+        msg = Message(subject="[NIP app] Contact Request",
+                      body=body_message,
+                      sender=app.config['ADMIN_EMAIL'],
+                      recipients=['csprock@gmail.com']) # TODO move to environment variable
+
+
+        thd = Thread(target=send_async_email, args=[app, msg])
+        thd.start()
+
+        flash("Thanks for your interest!".format(name))
+
         return redirect(url_for('main.contact'))
 
     return render_template('contact.html', title="Contact Us", main_header="Contact Us", form=form)
