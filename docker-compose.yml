@@ -36,6 +36,8 @@ services:
    - "7000:7000"
   depends_on:
    - web
+  volumes:
+   - ./web/app/static:/home/static
   networks:
    - webnet
 
