@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<style>
+
+rect {fill: steelblue}
+
+</style>
+
+
+</head>
+
+
+<body>
+
+<svg class = "chart"></svg>
+<script>
+
+
+var margin = {top:20, right: 30, bottom:20, left:30}, width = 500 - margin.left - margin.right, height = 500 - margin.top - margin.bottom;
+
+
+var x = d3.scaleBand().rangeRound([0, width]).paddingInner(0.05);
+var y = d3.scaleLinear().range([height, 0])
+
+var xAxis = d3.axisBottom(x);
+var yAxis = d3.axisLeft(y);
+
+
+var chart = d3.select(".chart")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+	.attr("class", "container")
+	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+d3.csv("gent_counts.csv", function(data){
+	
+	the_data = data;
+	x.domain(data.map(function(d){return d.date}));
+	y.domain([0, 20]);
+	
+	xAxis.tickValues(data.map(function(d) { return d.date }));
+	yAxis.ticks(5,"s");
+	
+	chart.selectAll(".bar")
+		.data(data)
+		.enter()
+		.append("rect")
+		.attr("class","bar")
+		.attr("x", function(d) { return x(d.date); })
+		.attr("y", function(d) { return y(d.articles);})
+		.attr("height", function(d) {return height - y(d.articles);})
+		.attr("width", x.bandwidth());	
+
+	chart.append("g")
+		.attr("class", "yaxis")
+		.call(yAxis);
+		
+	chart.append("g")
+		.attr("class","xaxis")
+		.attr("transform","translate(0," + height + ")")
+		.call(xAxis);
+});
+
+
+
+</script>
+</body>
+</html>

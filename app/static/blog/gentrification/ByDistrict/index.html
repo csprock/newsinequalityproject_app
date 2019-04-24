@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+<title> Coverage Map </title>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<style>
+	
+	body {font-family: helvetica}
+	
+	td {padding-right: 20px}
+	
+	path:hover {opacity: 0.7}
+	path {stroke-width: 0.1; stroke: black}
+	
+	div.tooltip {	
+    position: absolute;
+	font-size: 150%;
+    text-align: left;							
+    padding: 8px;				
+    font: 12px sans-serif;		
+    background: #F4F6F7;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;	
+	
+	h2 {align: center}
+		
+}
+</style>
+
+<script>
+
+var add_table = function(d2){
+
+		var theTable = document.getElementById("theTable");
+		var theTitle = document.getElementById("heading");
+		var heading = document.createTextNode("Neighborhood: ");
+		theTitle.appendChild(heading);
+		
+		<!-- first row -->
+		var row1 = theTable.insertRow(0)
+		var cell1 = row1.insertCell(0)
+		var cell2 = row1.insertCell(1)
+		var temp1 = document.createTextNode("Articles about Gentrification:")
+		cell1.append(temp1)
+		var temp2 = document.createTextNode(d2.properties.counts)
+		cell2.append(temp2)
+		<!-- second row -->
+		var row2 = theTable.insertRow(1)
+		var cell1 = row2.insertCell(0)
+		var cell2 = row2.insertCell(1)
+		var temp1 = document.createTextNode("Is Gentrifying?:")
+		cell1.append(temp1)
+		if (d2.properties.Gentrifying == 1){
+			var temp2 = document.createTextNode("Yes")
+		} else {
+			var temp2 = document.createTextNode("No")
+		}
+		cell2.append(temp2)
+
+}
+
+
+
+var getSelection = function(){
+	var e = document.getElementById("formOptions");
+	var s = e.options[e.selectedIndex].value;
+	
+	if (s == 'counts') {
+		max_value = 22;
+		temp = document.getElementById("subtitle")
+		text = temp.childNodes[0]
+		temp.removeChild(text)
+		text = document.createTextNode("Articles About Gentrification")
+		temp.append(text)
+		
+	} else if (s == 'gent'){
+		max_value = 1;
+		temp = document.getElementById("subtitle")
+		text = temp.childNodes[0]
+		temp.removeChild(text)
+		text = document.createTextNode("Gentrifying Neighborhoods")
+		temp.append(text)
+	}
+	return [s, max_value]
+}
+
+var updateMap = function(data){
+	S = getSelection()
+	var temp_scale = d3.scaleSequential(d3.interpolateBlues).domain([0, S[1]])
+		
+	data.forEach( function(d){
+		temp = document.getElementById(d.properties.boro_cd)
+		if (S[0] == 'counts') {
+			<!--	d3.select(d.properties.ntacode).transition().delay(50).attr("fill", temp_scale(d.properties.counts)) -->
+			temp.setAttribute("style", "fill: " + temp_scale(d.properties.counts))
+		} else if (S[0] == 'gent'){
+			<!-- d3.select(d.properties.ntacode).transition().delay(50).attr("fill", temp_scale(d.properties.counts)) -->
+			temp.setAttribute("style", "fill: " + temp_scale(d.properties.gent*0.5))
+		}
+	})
+}
+
+
+
+
+
+</script>
+
+
+</head>
+
+<body>
+ <h1 style = "text-align: left"> Gentrification Coverage</h1>
+
+<h4 id = "subtitle" style = "text-align: center"> Articles about Gentrification </h4>
+
+ <div class = "flex_container">
+	<!-- style = "float: left; position: absolute; z-index:2 -->
+	<div id = "formContainer" class = "flex_form">
+		<form id = "theForm" action = 'alert()'>
+			<select name = "stats" id = "formOptions">
+				<option value = 'counts'> Articles </option>
+				<option value = 'gent'> Gentrifying </option>
+			</select>
+			<input type = "button" value = "Update" onclick = "updateMap(the_data.features)">
+		</form>
+	</div>
+	<!-- style = "float:left; position:absolute; z-index: 1" -->
+	<div id = "imageContainer" class = "flex_map" style = "z-index:2 ">
+		<svg class = "canvas"></svg>
+	</div>
+
+</div>
+
+ 
+ 
+<script type = "text/javascript">
+
+
+width = 900;
+height = 900;	
+
+var canvas = d3.select(".canvas")
+	.attr("width", width)
+	.attr("height", height)
+	
+var map = d3.select(".canvas")
+			.append("g")
+			.attr("id", "map");
+var max_value = 25;
+
+
+var color_scale = d3.scaleSequential(d3.interpolateBlues).domain([0, max_value])
+
+var div = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
+	
+d3.json("gent_map.geojson", function(data) {
+	
+	the_data = data;
+	
+	/. autoscaling ./ 
+	
+	var center = d3.geoCentroid(data);
+	var scale = 100;
+	var p_scale = 0.74
+	var offset = [width/2, height/2];
+	
+	
+	var projection = d3.geoMercator().scale(scale).center(center);
+	
+	var path = d3.geoPath().projection(projection);
+	
+	var bounds = path.bounds(data);
+	var hscale = scale*width/ ( bounds[1][0] - bounds[0][0]);
+	var vscale = scale*height/(bounds[1][1] - bounds[0][1]);
+	
+	
+	
+	var scale = (hscale < vscale) ? hscale:vscale;
+	var offset = [width - (bounds[0][0] + bounds[1][0])/2   , height - (bounds[0][1] + bounds[1][1])/2 - 300];
+	
+	/. map ./
+	
+	var projection = d3.geoMercator().center(center).scale(scale*p_scale).translate(offset);
+	var path = path.projection(projection);
+	
+	var group = map.selectAll("g")
+		.data(data.features)
+		.enter()
+		.append("g");
+		
+	
+	var areas = group.append("path")
+		.attr("id", function(d) {
+			return d.properties.boro_cd;
+		})
+		.attr("d",path)
+		.attr("class","area")
+		.attr("fill", function(d){
+			return color_scale(d.properties.counts)
+		}).on("mouseover", function(d) {
+			/. add tooltip ./
+			div.transition().duration(600).style("opacity", 0.8);
+			div.attr("id", "tooltip")
+			div.html(
+			"<p id = 'heading' style = 'font-size: 125%'> </p>" + 
+			"<p id = 'total_articles' style = 'font-size: 125%' > </p>" + 
+			"<hr>" + 
+			"<table style = 'font-size: 125%' id = 'theTable'> </table>")
+				.style("left", (d3.event.pageX) + "px")		
+                .style("top", (d3.event.pageY ) + "px")
+				.attr("id", "tooltip");
+			/. add table ./
+			add_table(d);
+		})
+		.on("mouseout", function(d) {
+			div.transition().duration(300).style("opacity", 0);
+		})
+
+});
+
+
+
+	
+</script>
+</body>
+</html>
