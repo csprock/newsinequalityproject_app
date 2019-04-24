@@ -14,19 +14,19 @@ class Config(object):
     #     password=os.environ['POSTGRES_PASSWORD'],
     #     dbname=os.environ['POSTGRES_DB'])
 
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    MAX_PER_PAGE = 3
+    MAX_PER_PAGE = 10
 
-    MAIL_SERVER = os.environ['MAIL_SERVER']
-    MAIL_PORT = os.environ['MAIL_PORT']
-    MAIL_USE_TLS = os.environ['MAIL_USE_TLS']
-    MAIL_USERNAME = os.environ['MAIL_USERNAME']
-    MAIL_PASSWORD = os.environ['MAIL_PASSWORD']
+    MAIL_SERVER = os.environ.get('MAIL_SERVER')
+    MAIL_PORT = os.environ.get('MAIL_PORT')
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS')
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 
-    ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
+    ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL')
 
 
     #AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
