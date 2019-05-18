@@ -1,6 +1,12 @@
 
 <div class="post-preview">
-    <a href="{{ url_for('blog.blog_post', post_id=post.id) }}">
+
+    {% if post.external_url %}
+      <a href="{{ post.external_url }}">
+    {% else %}
+      <a href="{{ url_for('blog.blog_post', post_id=post.id) }}">
+    {% endif %}
+
       <h2 class="post-title">
         {{ post.title }}
       </h2>
@@ -14,6 +20,6 @@
       <a href="{{ post.author().handle }}">
           {{ post.author().firstname }}
       </a>
-      on {{ post.date.date().strftime('%d-%m-%Y') }}
+      on {{ post.date.date().strftime('%m-%d-%Y') }}
     </p>
 </div>

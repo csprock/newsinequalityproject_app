@@ -9,7 +9,7 @@ parser.add_argument('--author_id', required=True, type=int)
 parser.add_argument('--year', required=True, type=int)
 parser.add_argument('--month', required=True, type=int)
 parser.add_argument('--day', required=True, type=int)
-
+parser.add_argument('--url', required=False, default=None, type=str)
 
 args = parser.parse_args()
 
@@ -18,7 +18,8 @@ author = Author.query.filter_by(id=args.author_id)
 post = Post(title=args.title, 
             date=datetime(year=args.year, month=args.month, day=args.day), 
             author=author, 
-            author_id=args.author_id)
+            author_id=args.author_id,
+	    external_url=args.url)
 
 db.session.add(post)
 db.session.commit()

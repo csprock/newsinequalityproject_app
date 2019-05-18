@@ -26,7 +26,9 @@ def index():
     next_url = url_for('blog.html', page=posts.prev_num) if posts.has_prev else None
     prev_url = url_for('blog.html', page=posts.next_num) if posts.has_next else None
 
-    return render_template('blog.html', main_header="News Inequality Project", title="News Inequality Project", posts=post_items, next_url=next_url, prev_url=prev_url)
+    header_pic_url = "/static/img/header_index.jpg"
+
+    return render_template('blog.html', main_header="News Inequality Project", title="News Inequality Project", posts=post_items, next_url=next_url, prev_url=prev_url, header_pic_url=header_pic_url)
 
 
 @bp.route('/about')
