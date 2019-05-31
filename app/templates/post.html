@@ -8,6 +8,16 @@
         <div class="row">
           <div class="col-lg-8 col-md-10 mx-auto">
 
+            {% if post %}
+
+              <p class="post-meta"> 
+                <i>
+                  By
+                  <a href="{{ post.author().handle }}">{{ post.author().firstname }} {{ post.author().lastname }}</a>, {{ post.date.date().strftime('%m-%d-%y') }}
+                </i>
+              </p>
+            {% endif %}
+
               {% block post %}
               {% endblock %}
 

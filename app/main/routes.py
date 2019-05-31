@@ -28,7 +28,7 @@ def index():
 
     header_pic_url = "/static/img/header_index.jpg"
 
-    return render_template('blog.html', main_header="News Inequality Project", title="News Inequality Project", posts=post_items, next_url=next_url, prev_url=prev_url, header_pic_url=header_pic_url)
+    return render_template('blog.html', main_header="The News Inequality Project", title="The News Inequality Project", posts=post_items, next_url=next_url, prev_url=prev_url, header_pic_url=header_pic_url)
 
 
 @bp.route('/about')
@@ -55,7 +55,7 @@ def contact():
         msg = Message(subject="[NIP app] Contact Request",
                       body=body_message,
                       sender=app.config['ADMIN_EMAIL'],
-                      recipients=['csprock@gmail.com']) # TODO move to environment variable
+                      recipients=app.config['ADMIN_RECIPIENTS'])
 
 
         thd = Thread(target=send_async_email, args=[app, msg])

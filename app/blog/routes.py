@@ -26,7 +26,9 @@ def blog():
     next_url = url_for('blog.html', page=posts.prev_num) if posts.has_prev else None
     prev_url = url_for('blog.html', page=posts.next_num) if posts.has_next else None
 
-    return render_template('blog.html', main_header="Blog", title="Blog", posts=post_items, next_url=next_url, prev_url=prev_url)
+    header_pic_url = "/static/img/header_index.jpg"
+
+    return render_template('blog.html', main_header="Blog", title="Blog", posts=post_items, next_url=next_url, prev_url=prev_url, header_pic_url=header_pic_url)
 
 
 @bp.route('/blog/<int:post_id>')
@@ -39,4 +41,4 @@ def blog_post(post_id):
     else:
         header_pic_url = None
 
-    return render_template('blog/post_{}.html'.format(post_id), main_header=post_meta.title, title=post_meta.title, header_pic_url=header_pic_url)
+    return render_template('blog/post_{}.html'.format(post_id), main_header=post_meta.title, title=post_meta.title, header_pic_url=header_pic_url, post=post_meta)

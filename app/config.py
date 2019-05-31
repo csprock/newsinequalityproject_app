@@ -27,6 +27,7 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 
     ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL')
+    ADMIN_RECIPIENTS = os.environ.get('ADMIN_RECIPIENTS')
 
 
     #AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
