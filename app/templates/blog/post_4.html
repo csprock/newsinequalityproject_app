@@ -162,7 +162,7 @@ function function_compute_max(data){
  
 <p>
 	We scraped 18 years of data from the New York Times by searching for the names of each neighborhoods and restricting the search to New York City
-	using the <a href="https://developer.nytimes.com/docs/articlesearch-product/1/overview" target="_blank" rel="noopener">article search API</a> 
+	using the <a href="https://developer.nytimes.com/docs/articlesearch-product/1/overview" target="_blank" rel="noopener">article search API</a>. 
 	Below is an interactive map of New York City's neighborhoods, showing the number of articles for found that matched a search for the name 
 	of that neighborhood along with the top five subjects for that year. Also shown are the top ten subjects for that year across all articles 
 	that matched a neighborhood name. 
@@ -181,6 +181,8 @@ function function_compute_max(data){
 var init_year = 2018;
 var width = 1300;
 var height = 1000;	
+var max_value = 1500;
+
 
 <!-- create svg -->
 var canvas = d3.select("body")
@@ -199,7 +201,6 @@ var div = d3.select("body").append("div")
     .attr("class", "tooltip")				
     .style("opacity", 0);
 
-var max_value = 1000;
 <!-- create color scale for map -->
 var color_scale = d3.scaleSequential(d3.interpolateBlues).domain([0, max_value])
 
