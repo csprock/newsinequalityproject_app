@@ -1,0 +1,25 @@
+
+<div class="post-preview">
+
+    {% if post.external_url %}
+      <a href="{{ post.external_url }}">
+    {% else %}
+      <a href="{{ url_for('blog.blog_post', post_id=post.id) }}">
+    {% endif %}
+
+      <h2 class="post-title">
+        {{ post.title }}
+      </h2>
+        {% if post.subtitle %}
+        <h3 class="post-subtitle">
+          {{ post.subtitle }}
+        </h3>
+        {% endif %}
+    </a>
+    <p class="post-meta">Posted by
+      <a href="{{ post.author().handle }}">
+          {{ post.author().firstname }}
+      </a>
+      on {{ post.date.date().strftime('%m-%d-%Y') }}
+    </p>
+</div>

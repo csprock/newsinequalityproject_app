@@ -1,0 +1,15 @@
+FROM python:3.6.8-stretch
+
+RUN apt-get update \
+    && apt-get install -y \ 
+    libpq-dev \
+    python3-dev
+
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+#COPY . /usr/src/app
