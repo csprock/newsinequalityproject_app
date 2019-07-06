@@ -74,17 +74,24 @@ def create_post(title, author_id, year, month, day, url):
 @click.option('--author_id', type=int, required=True)
 def delete_author(author_id):
     
-    author = models.Author.query.filter_by(id=author_id).first()
+    # TODO: also delete all posts by this author
 
-    # post = models.Post(title=title, 
-    #                    date=datetime(year=year, month=month, day=day), 
-    #                    author=author, 
-    #                    author_id=author_id,
-    #                    external_url=url)
+    author = models.Author.query.filter_by(id=author_id).first()
 
     db.session.delete(author)
     db.session.commit()
 
     print(f"Author {author.firstname} {author.lastname} deleted.")
+
+@metadata_cli.command('delete_post')
+@click.option('--post_id', type=int, required=True)
+def delete_author(post_id):
+    
+    post = models.post.query.filter_by(id=post_id).first()
+
+    db.session.delete(post)
+    db.session.commit()
+
+    print(f"Post {post.id} {author.title} deleted.")
 
 app.cli.add_command(metadata_cli)

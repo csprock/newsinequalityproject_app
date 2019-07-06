@@ -1,10 +1,12 @@
 
 
-#### Application Settings #####
 COMPOSE_APP := docker-compose-app.yml
 BUILD_CACHE := --no-cache
 DB_VOLUME := nip_app_metadata
 
+APP_SERVICE := app
+DB_SERVICE := db
+PROXY_SERVICE := nginx
 
 #################################
 ####### Run Application #########
@@ -38,3 +40,33 @@ clean:
 ## clean-data
 clean-data:
 	docker volume rm ${DB_VOLUME}
+
+## clean-all
+clean-all: clean clean-data
+
+#### database commands #####
+
+## init-db
+init-db:
+	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask db init
+
+## migrade-db
+migrate-db:
+	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask db migrate
+	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask db upgrade
+
+## create-author
+create-author:
+	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask metadata create_author --firstname $(firstname) --lastname $(lastname) --email $(email) --handle $(handle)
+
+## create-post
+create-post:
+	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask metadata create_post --title $(title) --author_id $(author_id) --year $(year) --month $(month) --day $(day) --url $(url)
+
+## delete-author
+delete-author:
+	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask metadata delete_author --author_id $(author_id)
+
+## delete-post
+delete-post:
+	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask metadata delete_post --post_id $(post_id)
