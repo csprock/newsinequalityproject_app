@@ -1,0 +1,7 @@
+__pycache__
+*.env
+originals
+*.pyc
+*.env
+config/.secrets-*
+app/migrations/*
