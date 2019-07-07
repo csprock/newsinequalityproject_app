@@ -25,11 +25,9 @@ class Post(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(256), nullable=False)
-    subtitle = db.Column(db.String(256))
     date = db.Column(db.DateTime(timezone=True), index=True, default=datetime.utcnow)
     external_url = db.Column(db.String(1024), nullable=True)
     header_pic = db.Column(db.Integer(), nullable=True)
-
     author_id = db.Column(db.Integer, db.ForeignKey('author.id'), nullable=False)
 
     def author(self):

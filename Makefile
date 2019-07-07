@@ -61,7 +61,11 @@ create-author:
 
 ## create-post
 create-post:
-	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask metadata create_post --title $(title) --author_id $(author_id) --year $(year) --month $(month) --day $(day) --url $(url)
+ifeq ($(url), )
+	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask metadata create_post --title $(title) --author_id $(author_id) --year $(year) --month $(month) --day $(day) --header_pic $(header_pic)
+else
+	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask metadata create_post --title $(title) --author_id $(author_id) --year $(year) --month $(month) --day $(day) --url $(url) --header_pic $(header_pic)
+endif
 
 ## delete-author
 delete-author:

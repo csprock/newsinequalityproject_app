@@ -8,6 +8,17 @@ import click
 from flask.cli import AppGroup
 from datetime import datetime
 
+import logging
+
+logger = logging.getLogger(__name__)
+formatter = logging.Formatter(fmt="%(asctime)s [%(level)s] %(message)s %(module)s")
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+handler.setLevel(logging.INFO)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
+
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -22,9 +33,7 @@ from app.blog import bp as blog_bp
 app.register_blueprint(main_bp)
 app.register_blueprint(blog_bp)
 
-
 from app import models
-
 
 #### Define CLI for DB management ####
 metadata_cli = AppGroup('metadata')
@@ -46,16 +55,17 @@ def create_author(firstname, lastname, email, handle):
 
     new_author = models.Author.query.order_by(models.Author.id.desc()).first()
 
-    print(f"Inserted new author with ID {new_author.id}")
+    logger.info(f"Inserted new author with ID {new_author.id}")
 
 @metadata_cli.command('create_post')
 @click.option('--title', type=str, required=True)
 @click.option('--author_id', type=int, required=True)
+@click.option('--header_pic', type=int, required=True)
 @click.option('--year', type=int, required=True)
 @click.option('--month', type=int, required=True)
 @click.option('--day', type=int, required=True)
 @click.option('--url', type=str, required=False, default=None)
-def create_post(title, author_id, year, month, day, url):
+def create_post(title, author_id, header_pic, year, month, day, url):
     
     author = models.Author.query.filter_by(id=author_id)
 
@@ -63,35 +73,41 @@ def create_post(title, author_id, year, month, day, url):
                        date=datetime(year=year, month=month, day=day), 
                        author=author, 
                        author_id=author_id,
-                       external_url=url)
+                       external_url=url,
+                       header_pic=header_pic)
 
     db.session.add(post)
     db.session.commit()
 
-    print("Added post.")
+    logger.info(f"Added post {post.id}")
 
 @metadata_cli.command('delete_author')
 @click.option('--author_id', type=int, required=True)
 def delete_author(author_id):
     
-    # TODO: also delete all posts by this author
-
     author = models.Author.query.filter_by(id=author_id).first()
+
+    posts = models.Post.query.filter_by(author_id=author.id).all()
+
+    for post in posts:
+        db.session.delete(post)
+
+    db.session.commit()
 
     db.session.delete(author)
     db.session.commit()
 
-    print(f"Author {author.firstname} {author.lastname} deleted.")
+    logger.info(f"Author {author.firstname} {author.lastname} deleted.")
 
 @metadata_cli.command('delete_post')
 @click.option('--post_id', type=int, required=True)
-def delete_author(post_id):
+def delete_post(post_id):
     
     post = models.post.query.filter_by(id=post_id).first()
 
     db.session.delete(post)
     db.session.commit()
 
-    print(f"Post {post.id} {author.title} deleted.")
+    logger.info(f"Post {post.id} {author.title} deleted.")
 
 app.cli.add_command(metadata_cli)
