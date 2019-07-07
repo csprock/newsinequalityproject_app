@@ -28,10 +28,11 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 mail = Mail(app)
 
-from app.main import bp as main_bp
-from app.blog import bp as blog_bp
-app.register_blueprint(main_bp)
-app.register_blueprint(blog_bp)
+from app import routes
+# from app.main import bp as main_bp
+# from app.blog import bp as blog_bp
+# app.register_blueprint(main_bp)
+# app.register_blueprint(blog_bp)
 
 from app import models
 
