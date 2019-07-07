@@ -5,3 +5,4 @@ originals
 *.env
 config/.secrets-*
 app/migrations/*
+app/*/static/*
