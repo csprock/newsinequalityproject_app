@@ -1,4 +1,5 @@
 import os
+import re
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -31,6 +32,7 @@ class Config(object):
 
     #### URLs to static files #####
     STATIC_HEADER_PICTURE_INDEX = 'blog/other/index_header.jpg'
+    DEFAULT_HEADER_PICTURE_NAME = re.compile("^header.(jpg|jpeg|png)$")
 
 
     #AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']

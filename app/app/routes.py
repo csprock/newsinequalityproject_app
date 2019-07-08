@@ -1,5 +1,9 @@
 import os
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template
+from flask import flash
+from flask import redirect
+from flask import url_for
+from flask import request
 from flask_mail import Message
 from threading import Thread
 
@@ -9,7 +13,7 @@ from app import mail
 from app.models import Post, Author
 
 from app.utils import send_async_email
-
+from app.utils import check_file_in_dir
 
 @app.route('/')
 @app.route('/index')
@@ -109,10 +113,17 @@ def blog_post(post_id):
 
     post_meta = Post.query.filter_by(id=post_id).first_or_404()
 
-    if post_meta.header_pic:
-        header_pic_url = url_for('static', filename=f"/blog/post_{post_id}/header.jpg")
+    _file = check_file_in_dir(os.path.join(app.root_path, f'static/blog/post_{post_id}'), app.config['DEFAULT_HEADER_PICTURE_NAME'])
+
+    if _file:
+        header_pic_url = url_for('static', filename=f"/blog/post_{post_id}/{_file}")
     else:
         header_pic_url = None
+
+    # if post_meta.header_pic:
+    #     header_pic_url = url_for('static', filename=f"/blog/post_{post_id}/header.jpg")
+    # else:
+    #     header_pic_url = None
 
     return render_template(f'blog/post_{post_id}.html', 
                             main_header=post_meta.title, 
