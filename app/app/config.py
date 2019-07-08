@@ -29,6 +29,10 @@ class Config(object):
     ADMIN_RECIPIENTS = os.environ.get('ADMIN_RECIPIENTS')
 
 
+    #### URLs to static files #####
+    STATIC_HEADER_PICTURE_INDEX = 'blog/other/index_header.jpg'
+
+
     #AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     #AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
     #FLASKS3_BUCKET_NAME = os.environ['FLASKS3_BUCKET_NAME']

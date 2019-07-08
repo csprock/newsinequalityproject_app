@@ -1,24 +1,14 @@
+import os
 from flask import render_template, flash, redirect, url_for, request
 from flask_mail import Message
+from threading import Thread
+
 from app.forms import ContactForm
-# from app.main import bp
 from app import app
 from app import mail
 from app.models import Post, Author
 
-from threading import Thread
-
-def send_async_email(app, msg):
-    with app.app_context():
-        mail.send(msg)
-
-def parse_html_file(path):
-
-    with open(path, 'r') as f:
-        file_content = f.read()
-
-    return file_content
-
+from app.utils import send_async_email
 
 
 @app.route('/')
@@ -34,14 +24,26 @@ def index():
     next_url = url_for('blog.html', page=posts.prev_num) if posts.has_prev else None
     prev_url = url_for('blog.html', page=posts.next_num) if posts.has_next else None
 
-    header_pic_url = "/static/img/header_index.jpg"
+    header_pic_url = url_for('static', filename=app.config['STATIC_HEADER_PICTURE_INDEX'])
 
-    return render_template('blog.html', main_header="The News Inequality Project", title="The News Inequality Project", posts=post_items, next_url=next_url, prev_url=prev_url, header_pic_url=header_pic_url)
+    return render_template('blog.html', 
+                            main_header="The News Inequality Project", 
+                            title="The News Inequality Project", 
+                            posts=post_items, 
+                            next_url=next_url, 
+                            prev_url=prev_url, 
+                            header_pic_url=header_pic_url)
 
 
 @app.route('/about')
 def about():
-    return render_template('about.html', main_header="About Us", title="About")
+
+    header_pic_url = url_for('static', filename=app.config['STATIC_HEADER_PICTURE_INDEX'])
+
+    return render_template('about.html', 
+                            main_header="About Us", 
+                            title="About",
+                            header_pic_url=header_pic_url)
 
 
 @app.route('/contact', methods=['GET', 'POST'])
@@ -71,9 +73,12 @@ def contact():
 
         flash("Thanks for your interest, {}!".format(name))
 
-        return redirect('/contact')
+        return redirect(url_for('contact'))
 
-    return render_template('contact.html', title="Contact Us", main_header="Contact Us", form=form)
+    return render_template('contact.html', 
+                            title="Contact Us", 
+                            main_header="Contact Us", 
+                            form=form)
 
 
 @app.route('/blog')
@@ -88,9 +93,15 @@ def blog():
     next_url = url_for('blog.html', page=posts.prev_num) if posts.has_prev else None
     prev_url = url_for('blog.html', page=posts.next_num) if posts.has_next else None
 
-    header_pic_url = "/static/img/header_index.jpg"
+    header_pic_url = url_for('static', filename=app.config['STATIC_HEADER_PICTURE_INDEX'])
 
-    return render_template('blog.html', main_header="Blog", title="Blog", posts=post_items, next_url=next_url, prev_url=prev_url, header_pic_url=header_pic_url)
+    return render_template('blog.html', 
+                            main_header="Blog", 
+                            title="Blog", 
+                            posts=post_items, 
+                            next_url=next_url, 
+                            prev_url=prev_url, 
+                            header_pic_url=header_pic_url)
 
 
 @app.route('/blog/<int:post_id>')
@@ -99,11 +110,15 @@ def blog_post(post_id):
     post_meta = Post.query.filter_by(id=post_id).first_or_404()
 
     if post_meta.header_pic:
-        header_pic_url = "/static/img/header_{}.jpg".format(post_id)
+        header_pic_url = url_for('static', filename=f"/blog/post_{post_id}/header.jpg")
     else:
         header_pic_url = None
 
-    return render_template('blog/post_{}.html'.format(post_id), main_header=post_meta.title, title=post_meta.title, header_pic_url=header_pic_url, post=post_meta)
+    return render_template(f'blog/post_{post_id}.html', 
+                            main_header=post_meta.title, 
+                            title=post_meta.title, 
+                            header_pic_url=header_pic_url, 
+                            post=post_meta)
 
 
 ##########################
