@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template
 #from flask_s3 import FlaskS3
 from flask_sqlalchemy import SQLAlchemy
@@ -7,6 +8,8 @@ from flask_mail import Mail
 import click
 from flask.cli import AppGroup
 from datetime import datetime
+
+from app.utils import create_content_folder
 
 import logging
 
@@ -79,6 +82,11 @@ def create_post(title, author_id, header_pic, year, month, day, url):
 
     db.session.add(post)
     db.session.commit()
+
+    if not url:
+        create_content_folder(path=os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER']),
+                            default_dir_name=app.config['DEFAULT_CONTENT_DIRECTORY_NAME'],
+                            id=post.id)
 
     logger.info(f"Added post {post.id}")
 

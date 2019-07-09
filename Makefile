@@ -8,10 +8,8 @@ APP_SERVICE := app
 DB_SERVICE := db
 PROXY_SERVICE := nginx
 
-#################################
-####### Run Application #########
-#################################
 
+#### app commands ####
 
 ## build
 build:

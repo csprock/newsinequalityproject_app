@@ -21,3 +21,12 @@ def parse_html_file(path):
         file_content = f.read()
 
     return file_content
+
+def create_content_folder(path, default_dir_name, id):
+    
+    try:
+        os.mkdir(os.path.join(path, default_dir_name + f"_{id}"))
+    except FileExistsError:
+        return False
+    else:
+        return True

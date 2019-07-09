@@ -33,6 +33,8 @@ class Config(object):
     #### URLs to static files #####
     STATIC_HEADER_PICTURE_INDEX = 'blog/other/index_header.jpg'
     DEFAULT_HEADER_PICTURE_NAME = re.compile("^header.(jpg|jpeg|png)$")
+    DEFAULT_CONTENT_DIRECTORY_NAME = 'post'
+    DEFAULT_BLOG_CONTENT_FOLDER = 'static/blog'
 
 
     #AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
