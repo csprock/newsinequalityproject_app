@@ -104,11 +104,11 @@ def delete_author(author_id):
 @click.option('--post_id', type=int, required=True)
 def delete_post(post_id):
     
-    post = models.post.query.filter_by(id=post_id).first()
+    post = models.Post.query.filter_by(id=post_id).first()
 
     db.session.delete(post)
     db.session.commit()
 
-    logger.info(f"Post {post.id} {author.title} deleted.")
+    logger.info(f"Post {post.id} {post.title} deleted.")
 
 app.cli.add_command(metadata_cli)
