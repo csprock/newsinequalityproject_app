@@ -10,7 +10,8 @@ def check_file_in_dir(dirname, filename_re):
     
     return False
 
-def send_async_email(app, msg):
+# TODO: fix import dependency for mail
+def send_async_email(app, msg, mail):
     with app.app_context():
         mail.send(msg)
 

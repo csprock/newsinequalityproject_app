@@ -72,7 +72,7 @@ def contact():
                         recipients=app.config['ADMIN_RECIPIENTS'])
 
 
-        thd = Thread(target=send_async_email, args=[app, msg])
+        thd = Thread(target=send_async_email, args=[app, msg, mail])
         thd.start()
 
         flash("Thanks for your interest, {}!".format(name))
