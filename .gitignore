@@ -5,4 +5,4 @@ originals
 *.env
 config/.secrets-*
 app/migrations/*
-app/*/static/*
+app/*/static/blog/*

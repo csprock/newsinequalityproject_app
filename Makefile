@@ -8,6 +8,16 @@ APP_SERVICE := app
 DB_SERVICE := db
 PROXY_SERVICE := nginx
 
+AWS_PUBLIC_IP := ec2-3-87-121-115.compute-1.amazonaws.com
+AWS_USER := ubuntu
+AWS_PUBLIC_KEY := /home/csprock/.ssh/nip-app-dev.pem
+
+STATIC_DIR := ./app/app/static
+REMOTE_STATIC_DIR := newsinequalityproject_app/app/app/static
+
+copy-blog-files:
+	scp -i ${AWS_PUBLIC_KEY} -r ${STATIC_DIR}/$(directory) ${AWS_USER}@${AWS_PUBLIC_IP}:${REMOTE_STATIC_DIR}/$(directory)
+
 
 #### app commands ####
 
@@ -72,3 +82,5 @@ delete-author:
 ## delete-post
 delete-post:
 	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask metadata delete_post --post_id $(post_id)
+
+
