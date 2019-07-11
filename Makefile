@@ -12,13 +12,22 @@ AWS_PUBLIC_IP := ec2-3-87-121-115.compute-1.amazonaws.com
 AWS_USER := ubuntu
 AWS_PUBLIC_KEY := /home/csprock/.ssh/nip-app-dev.pem
 
-STATIC_DIR := ./app/app/static
-REMOTE_STATIC_DIR := newsinequalityproject_app/app/app/static
+STATIC_DIR := ./app/app/static/blog
+REMOTE_STATIC_DIR := /home/ubuntu/newsinequalityproject_app/app/app/static/blog
+
+CONFIG_DIR := ./config
+REMOTE_CONFIG_DIR := newsinequalityproject_app/config
+
+TEMPLATE_DIR := ./app/app/templates/blog
+REMOTE_TEMPLATE_DIR := /home/ubuntu/newsinequalityproject_app/app/app/templates/blog
 
 copy-blog-files:
-	scp -i ${AWS_PUBLIC_KEY} -r ${STATIC_DIR}/$(directory) ${AWS_USER}@${AWS_PUBLIC_IP}:${REMOTE_STATIC_DIR}/$(directory)
+	ssh -i ${AWS_PUBLIC_KEY} ${AWS_USER}@${AWS_PUBLIC_IP} "mkdir ${REMOTE_STATIC_DIR}/post_$(post)"
+	scp -i ${AWS_PUBLIC_KEY} -r ${STATIC_DIR}/post_$(post)/* ${AWS_USER}@${AWS_PUBLIC_IP}:${REMOTE_STATIC_DIR}/post_$(post)
+	scp -i ${AWS_PUBLIC_KEY} -r ${TEMPLATE_DIR}/post_$(post).html ${AWS_USER}@${AWS_PUBLIC_IP}:${REMOTE_TEMPLATE_DIR}/post_$(post).html
 
-
+copy-secrets-file:
+	scp -i ${AWS_PUBLIC_KEY} ${CONFIG_DIR}/$(file) ${AWS_USER}@${AWS_PUBLIC_IP}:${REMOTE_CONFIG_DIR}/$(file)
 #### app commands ####
 
 ## build
@@ -53,7 +62,7 @@ clean-data:
 clean-all: clean clean-data
 
 #### database commands #####
-
+# TODO: create command to initialize blog folder in template and static directories
 ## init-db
 init-db:
 	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask db init
