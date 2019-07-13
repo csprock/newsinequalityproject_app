@@ -7,13 +7,11 @@ services:
   env_file:
    - ./config/.secrets-app
    - ./config/app.env
-  environment:
-   - INIT_DB=0
   expose:
    - 8000
   ports:
-   - 8000:8000
-  command: gunicorn main:app -w 2 -b 0.0.0.0:8000 --timeout 1200 --reload
+   - ${HTTP_PORT}:8000
+  command: gunicorn main:app -w ${WORKERS} -b 0.0.0.0:8000 --timeout 1200 --reload
   volumes:
     - ./app:/usr/src/app
   depends_on:
@@ -31,7 +29,7 @@ services:
   ports:
    - 9999:5432
   volumes:
-   - metadata:/var/lib/postgresql/data
+   - ${newsinequalityproject_app}:/var/lib/postgresql/data
   networks:
    - webnet
  nginx:
@@ -53,4 +51,4 @@ networks:
  webnet:
 
 volumes:
-  metadata:
+  ${newsinequalityproject_app}:
