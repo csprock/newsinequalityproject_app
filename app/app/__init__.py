@@ -132,7 +132,7 @@ def init_directories():
         app.logger.info("templates/blogs folder already exists")
 
     try:
-        os.mkdir(os.path.join(os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER']), 'other')
+        os.mkdir(os.path.join(os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER']), 'other'))
     except FileExistsError:
         app.logger.info("static/blog/other already exists")
 

@@ -35,6 +35,7 @@ class Config(object):
     DEFAULT_HEADER_PICTURE_NAME = re.compile("^header.(jpg|jpeg|png)$")
     DEFAULT_CONTENT_DIRECTORY_NAME = 'post'
     DEFAULT_BLOG_CONTENT_FOLDER = 'static/blog'
+    DEFAULT_BLOG_TEMPLATE_FOLDER = 'templates/blog'
 
 
     #AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
