@@ -16,9 +16,9 @@ AWS_PUBLIC_IP := ec2-3-87-121-115.compute-1.amazonaws.com
 AWS_USER := ubuntu
 AWS_PUBLIC_KEY := /home/csprock/.ssh/nip-app-dev.pem
 
-SECRETS_APP := .secrets-app
-SECRETS_DB := .secrets-db
-ENV_APP := app.env
+# SECRETS_APP := .secrets-app
+# SECRETS_DB := .secrets-db
+# ENV_APP := app.env
 
 ############################################
 ##### Define file paths and locations ######
@@ -51,10 +51,10 @@ copy-secrets-file:
 	scp -i ${AWS_PUBLIC_KEY} ${CONFIG_DIR}/$(file) ${AWS_USER}@${AWS_PUBLIC_IP}:${REMOTE_CONFIG_DIR}/$(file)
 
 
-copy-secrets:
-	copy-secrets-file file=${SECRETS_APP}
-	copy-secrets-file file=${SECRETS_DB}
-	copy-secrets-file file=${ENV_APP}
+# copy-secrets: copy-secrets-file
+# 	copy-secrets-file file=${SECRETS_APP}
+# 	copy-secrets-file file=${SECRETS_DB}
+# 	copy-secrets-file file=${ENV_APP}
 
 #### app commands ####
 
@@ -91,7 +91,8 @@ clean-all: clean clean-data
 
 #### database commands #####
 
-init-all: init-dir init-db migrate-db	
+init-all: init-dir init-db migrate-db
+
 
 init-dir:
 	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask metadata init_directories

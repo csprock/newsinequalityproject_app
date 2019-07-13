@@ -37,6 +37,8 @@ class Config(object):
     DEFAULT_BLOG_CONTENT_FOLDER = 'static/blog'
     DEFAULT_BLOG_TEMPLATE_FOLDER = 'templates/blog'
 
+    UID = 1000
+
 
     #AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     #AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']

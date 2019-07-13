@@ -120,21 +120,40 @@ def delete_post(post_id):
 @metadata_cli.command("init_directories")
 def init_directories():
 
-    try:
-        os.mkdir(os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER']))
-    except FileExistsError:
-        app.logger.info("static/blogs folder already exists")
-        pass
 
-    try:
-        os.mkdir(os.path.join(app.root_path, app.config['DEFAULT_BLOG_TEMPLATE_FOLDER']))
-    except FileExistsError:
-        app.logger.info("templates/blogs folder already exists")
+    paths = [
+        os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER']),
+        os.path.join(app.root_path, app.config['DEFAULT_BLOG_TEMPLATE_FOLDER']),
+        os.path.join(os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER']), 'other')
+    ]
 
-    try:
-        os.mkdir(os.path.join(os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER']), 'other'))
-    except FileExistsError:
-        app.logger.info("static/blog/other already exists")
+    for path in paths:
+        try:
+            os.mkdir(path)
+            os.chown(path, app.config['UID'], app.config['UID'])
+        except FileExistsError:
+            app.logger.info(f"{path} already exists")
+
+    # try:
+    #     path = os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER'])
+    #     os.mkdir(path)
+    #     os.chown(path, app.config['UID'], app.config['UID'])
+    # except FileExistsError:
+    #     app.logger.info("static/blogs folder already exists")
+
+    # try:
+    #     path = os.path.join(app.root_path, app.config['DEFAULT_BLOG_TEMPLATE_FOLDER'])
+    #     os.mkdir(path)
+    #     os.chown(path, app.config['UID'], app.config['UID'])
+    # except FileExistsError:
+    #     app.logger.info("templates/blogs folder already exists")
+
+    # try:
+    #     path = os.path.join(os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER']), 'other')
+    #     os.mkdir(path)
+    #     os.chown(path, app.config['UID'], app.config['UID'])
+    # except FileExistsError:
+    #     app.logger.info("static/blog/other already exists")
 
 
 app.cli.add_command(metadata_cli)
