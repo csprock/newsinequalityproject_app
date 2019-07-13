@@ -114,11 +114,14 @@ def blog_post(post_id):
     post_meta = Post.query.filter_by(id=post_id).first_or_404()
 
     _file = check_file_in_dir(os.path.join(app.root_path, f'static/blog/post_{post_id}'), app.config['DEFAULT_HEADER_PICTURE_NAME'])
+    app.logger.debug("Header file {}".format(_file))
 
     if _file:
         header_pic_url = url_for('static', filename=f"/blog/post_{post_id}/{_file}")
+        app.logger.debug(f"header_pic_url: {header_pic_url}")
     else:
         header_pic_url = None
+        app.logger.debug("header_pic_url is None")
 
     # if post_meta.header_pic:
     #     header_pic_url = url_for('static', filename=f"/blog/post_{post_id}/header.jpg")

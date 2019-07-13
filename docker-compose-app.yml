@@ -11,7 +11,7 @@ services:
    - 8000
   ports:
    - ${HTTP_PORT}:8000
-  command: gunicorn main:app -w ${WORKERS} -b 0.0.0.0:8000 --timeout 1200 --reload
+  command: gunicorn main:app -w ${WORKERS} -b 0.0.0.0:8000 --timeout 1200 --reload --log-level ${LOG_LEVEL}
   volumes:
     - ./app:/usr/src/app
   depends_on:

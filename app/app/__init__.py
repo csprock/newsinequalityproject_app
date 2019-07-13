@@ -11,33 +11,14 @@ from datetime import datetime
 
 from app.utils import create_content_folder
 
-import logging
-
-
 app = Flask(__name__)
 app.config.from_object(Config)
 
-logger = logging.getLogger(__name__)
-
-formatter = logging.Formatter(fmt="%(asctime)s [%(level)s] %(message)s %(module)s")
-handler = logging.StreamHandler()
-handler.setFormatter(formatter)
-handler.setLevel(logging.INFO)
-logger.addHandler(handler)
-logger.setLevel(logging.INFO)
-
-
-#s3 = FlaskS3(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 mail = Mail(app)
 
 from app import routes
-# from app.main import bp as main_bp
-# from app.blog import bp as blog_bp
-# app.register_blueprint(main_bp)
-# app.register_blueprint(blog_bp)
-
 from app import models
 
 #### Define CLI for DB management ####
@@ -60,7 +41,7 @@ def create_author(firstname, lastname, email, handle):
 
     new_author = models.Author.query.order_by(models.Author.id.desc()).first()
 
-    #logger.info(f"Inserted new author with ID {new_author.id}")
+    app.logger.info(f"Inserted new author with ID {new_author.id}")
 
 @metadata_cli.command('create_post')
 @click.option('--title', type=str, required=True)
@@ -84,7 +65,7 @@ def create_post(title, author_id, header_pic, year, month, day, url):
     db.session.add(post)
     db.session.commit()
 
-    #logger.info(f"Added post {post.id}")
+    app.logger.info(f"Added post {post.id}")
 
 @metadata_cli.command('delete_author')
 @click.option('--author_id', type=int, required=True)
@@ -102,7 +83,7 @@ def delete_author(author_id):
     db.session.delete(author)
     db.session.commit()
 
-    #logger.info(f"Author {author.firstname} {author.lastname} deleted.")
+    app.logger.info(f"Author {author.firstname} {author.lastname} deleted.")
 
 @metadata_cli.command('delete_post')
 @click.option('--post_id', type=int, required=True)
@@ -113,7 +94,7 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
 
-    #logger.info(f"Post {post.id} {post.title} deleted.")
+    app.logger.info(f"Post {post.id} {post.title} deleted.")
 
 
 
@@ -131,8 +112,9 @@ def init_directories():
         try:
             os.mkdir(path)
             os.chown(path, app.config['UID'], app.config['UID'])
+            app.logger.info(f"{path} created.")
         except FileExistsError:
-            app.logger.info(f"{path} already exists")
+            app.logger.warning(f"{path} already exists")
 
     # try:
     #     path = os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER'])
