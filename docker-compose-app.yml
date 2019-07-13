@@ -29,7 +29,7 @@ services:
   ports:
    - 9999:5432
   volumes:
-   - ${newsinequalityproject_app}:/var/lib/postgresql/data
+   - newsinequalityproject_app:/var/lib/postgresql/data
   networks:
    - webnet
  nginx:
@@ -51,4 +51,4 @@ networks:
  webnet:
 
 volumes:
-  ${newsinequalityproject_app}:
+  newsinequalityproject_app:

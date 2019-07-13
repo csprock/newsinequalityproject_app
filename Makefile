@@ -16,6 +16,10 @@ AWS_PUBLIC_IP := ec2-3-87-121-115.compute-1.amazonaws.com
 AWS_USER := ubuntu
 AWS_PUBLIC_KEY := /home/csprock/.ssh/nip-app-dev.pem
 
+SECRETS_APP := .secrets-app
+SECRETS_DB := .secrets-db
+ENV_APP := app.env
+
 ############################################
 ##### Define file paths and locations ######
 ############################################
@@ -33,6 +37,7 @@ TEMPLATE_DIR := ./app/app/templates/blog
 REMOTE_TEMPLATE_DIR := /home/ubuntu/newsinequalityproject_app/app/app/templates/blog
 
 
+#### SCP file copy commands ####
 
 copy-blog-files:
 	ssh -i ${AWS_PUBLIC_KEY} ${AWS_USER}@${AWS_PUBLIC_IP} "mkdir ${REMOTE_STATIC_DIR}/post_$(post)"
@@ -44,6 +49,12 @@ copy-other-files:
 
 copy-secrets-file:
 	scp -i ${AWS_PUBLIC_KEY} ${CONFIG_DIR}/$(file) ${AWS_USER}@${AWS_PUBLIC_IP}:${REMOTE_CONFIG_DIR}/$(file)
+
+
+copy-secrets:
+	copy-secrets-file file=${SECRETS_APP}
+	copy-secrets-file file=${SECRETS_DB}
+	copy-secrets-file file=${ENV_APP}
 
 #### app commands ####
 
@@ -113,5 +124,3 @@ delete-author:
 ## delete-post
 delete-post:
 	docker-compose -f ${COMPOSE_APP} run -d ${APP_SERVICE} flask metadata delete_post --post_id $(post_id)
-
-
