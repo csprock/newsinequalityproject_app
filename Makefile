@@ -1,8 +1,12 @@
+##################################
+##### Define resource names ######
+##################################
 
+APP_NAME := newsinequalityproject_app
 
 COMPOSE_APP := docker-compose-app.yml
 BUILD_CACHE := --no-cache
-DB_VOLUME := nip_app_metadata
+DB_VOLUME := ${APP_NAME}_app_metadata
 
 APP_SERVICE := app
 DB_SERVICE := db
@@ -12,8 +16,13 @@ AWS_PUBLIC_IP := ec2-3-87-121-115.compute-1.amazonaws.com
 AWS_USER := ubuntu
 AWS_PUBLIC_KEY := /home/csprock/.ssh/nip-app-dev.pem
 
+############################################
+##### Define file paths and locations ######
+############################################
+
 STATIC_DIR := ./app/app/static/blog
 STATIC_OTHER_DIR := ./app/app/static/blog/other
+
 REMOTE_STATIC_DIR := /home/ubuntu/newsinequalityproject_app/app/app/static/blog
 REMOTE_STATIC_OTHER_DIR := /home/ubuntu/newsinequalityproject_app/app/app/static/blog/other
 
@@ -35,6 +44,7 @@ copy-other-files:
 
 copy-secrets-file:
 	scp -i ${AWS_PUBLIC_KEY} ${CONFIG_DIR}/$(file) ${AWS_USER}@${AWS_PUBLIC_IP}:${REMOTE_CONFIG_DIR}/$(file)
+
 #### app commands ####
 
 ## build
