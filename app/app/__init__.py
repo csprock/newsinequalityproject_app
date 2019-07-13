@@ -13,7 +13,12 @@ from app.utils import create_content_folder
 
 import logging
 
+
+app = Flask(__name__)
+app.config.from_object(Config)
+
 logger = logging.getLogger(__name__)
+
 formatter = logging.Formatter(fmt="%(asctime)s [%(level)s] %(message)s %(module)s")
 handler = logging.StreamHandler()
 handler.setFormatter(formatter)
@@ -21,10 +26,6 @@ handler.setLevel(logging.INFO)
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
-
-
-app = Flask(__name__)
-app.config.from_object(Config)
 
 #s3 = FlaskS3(app)
 db = SQLAlchemy(app)
@@ -59,7 +60,7 @@ def create_author(firstname, lastname, email, handle):
 
     new_author = models.Author.query.order_by(models.Author.id.desc()).first()
 
-    logger.info(f"Inserted new author with ID {new_author.id}")
+    #logger.info(f"Inserted new author with ID {new_author.id}")
 
 @metadata_cli.command('create_post')
 @click.option('--title', type=str, required=True)
@@ -83,12 +84,7 @@ def create_post(title, author_id, header_pic, year, month, day, url):
     db.session.add(post)
     db.session.commit()
 
-    if not url:
-        create_content_folder(path=os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER']),
-                            default_dir_name=app.config['DEFAULT_CONTENT_DIRECTORY_NAME'],
-                            id=post.id)
-
-    logger.info(f"Added post {post.id}")
+    #logger.info(f"Added post {post.id}")
 
 @metadata_cli.command('delete_author')
 @click.option('--author_id', type=int, required=True)
@@ -106,7 +102,7 @@ def delete_author(author_id):
     db.session.delete(author)
     db.session.commit()
 
-    logger.info(f"Author {author.firstname} {author.lastname} deleted.")
+    #logger.info(f"Author {author.firstname} {author.lastname} deleted.")
 
 @metadata_cli.command('delete_post')
 @click.option('--post_id', type=int, required=True)
@@ -117,6 +113,28 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
 
-    logger.info(f"Post {post.id} {post.title} deleted.")
+    #logger.info(f"Post {post.id} {post.title} deleted.")
+
+
+
+@metadata_cli.command("init_directories")
+def init_directories():
+
+    try:
+        os.mkdir(os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER']))
+    except FileExistsError:
+        app.logger.info("static/blogs folder already exists")
+        pass
+
+    try:
+        os.mkdir(os.path.join(app.root_path, app.config['DEFAULT_BLOG_TEMPLATE_FOLDER']))
+    except FileExistsError:
+        app.logger.info("templates/blogs folder already exists")
+
+    try:
+        os.mkdir(os.path.join(os.path.join(app.root_path, app.config['DEFAULT_BLOG_CONTENT_FOLDER']), 'other')
+    except FileExistsError:
+        app.logger.info("static/blog/other already exists")
+
 
 app.cli.add_command(metadata_cli)
