@@ -9,8 +9,6 @@ services:
    - ./config/app.env
   expose:
    - 8000
-  ports:
-   - ${HTTP_PORT}:8000
   command: gunicorn main:app -w ${WORKERS} -b 0.0.0.0:8000 --timeout 1200 --reload --log-level ${LOG_LEVEL}
   volumes:
     - ./app:/usr/src/app
@@ -26,8 +24,6 @@ services:
    - ./config/.secrets-db
   expose:
    - 5432
-  ports:
-   - 9999:5432
   volumes:
    - newsinequalityproject_app:/var/lib/postgresql/data
   networks:
@@ -40,7 +36,7 @@ services:
     - ./config/nginx.conf:/etc/nginx/nginx.conf
     - ./config/nip_app.conf:/etc/nginx/conf.d/nip_app.conf
   ports:
-   - 7000:7000
+   - ${HTTP_PORT}:7000
   depends_on:
    - app
    - db

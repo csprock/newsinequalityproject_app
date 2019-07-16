@@ -12,7 +12,7 @@ APP_SERVICE := app
 DB_SERVICE := db
 PROXY_SERVICE := nginx
 
-AWS_PUBLIC_IP := ec2-3-87-121-115.compute-1.amazonaws.com
+AWS_PUBLIC_IP := 3.219.123.60
 AWS_USER := ubuntu
 AWS_PUBLIC_KEY := /home/csprock/.ssh/nip-app-dev.pem
 
