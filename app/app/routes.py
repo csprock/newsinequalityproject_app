@@ -117,7 +117,7 @@ def blog_post(post_id):
     app.logger.debug("Header file {}".format(_file))
 
     if _file:
-        header_pic_url = url_for('static', filename=f"/blog/post_{post_id}/{_file}")
+        header_pic_url = url_for('static', filename=f"blog/post_{post_id}/{_file}")
         app.logger.debug(f"header_pic_url: {header_pic_url}")
     else:
         header_pic_url = None
