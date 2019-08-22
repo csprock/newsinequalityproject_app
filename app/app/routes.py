@@ -69,7 +69,7 @@ def contact():
         msg = Message(subject="[NIP app] Contact Request",
                         body=body_message,
                         sender=app.config['ADMIN_EMAIL'],
-                        recipients=app.config['ADMIN_RECIPIENTS'])
+                        recipients=app.config['ADMIN_RECIPIENTS'].split(','))
 
 
         thd = Thread(target=send_async_email, args=[app, msg, mail])
